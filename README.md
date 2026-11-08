@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/smartduck-hero-banner.svg" alt="SmartDuck: IoT Egg Incubation System" width="100%">
+  <img src="assets/smartduck-hero-banner.svg" alt="SmartDuck: An IoT Web-Based Balut and Penoy Production Monitoring and Egg Incubation System for Uno Duck Farm" width="100%">
 </p>
 
 <p align="center">
@@ -269,5 +269,5 @@ message me on Telegram or Facebook. Just tap a button below.
 <p align="center">
   <img src="assets/logo-transparent.png" width="120" alt="SmartDuck logo">
   <br>
-  <sub>SmartDuck: IoT Egg Incubation System</sub>
+  <sub>SmartDuck: An IoT Web-Based Balut and Penoy Production Monitoring and Egg Incubation System for Uno Duck Farm</sub>
 </p>
