@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/smartduck-hero-banner.svg" alt="SmartDuck: An IoT Web-Based Balut and Penoy Production Monitoring and Egg Incubation System for Uno Duck Farm" width="100%">
+  <img src="assets/smartduck-banner.svg" alt="SmartDuck: An IoT Web-Based Balut and Penoy Production Monitoring and Egg Incubation System for Uno Duck Farm" width="100%">
 </p>
 
 <p align="center">
