@@ -102,8 +102,8 @@ Every part can be set to **ON**, **OFF** or **AUTO** from the dashboard. In AUTO
 | :---: | --- | --- |
 | <img src="assets/badges/fire.svg" width="38" height="38" alt=""> | **Heater and incubator light** | On at 37.3 °C, off at 37.7 °C |
 | <img src="assets/badges/fan.svg" width="38" height="38" alt=""> | **Cooling fan** | On at 37.7 °C, off once it is back at 37.3 °C |
-| <img src="assets/badges/arrows-clockwise.svg" width="38" height="38" alt=""> | **Egg turning motor** | One full turn every 4 hours |
-| <img src="assets/badges/arrows-down-up.svg" width="38" height="38" alt=""> | **Tray actuators** | Lower the tray on Day 7 and Day 14 for candling, then raise it after 10 minutes |
+| <img src="assets/badges/arrows-clockwise.svg" width="38" height="38" alt=""> | **Egg rolling** | One full turn every 4 hours |
+| <img src="assets/badges/arrows-down-up.svg" width="38" height="38" alt=""> | **Actuators** | Lower the tray on Day 7 and Day 14 for candling, then raise it after 10 minutes |
 | <img src="assets/badges/lightbulb-filament.svg" width="38" height="38" alt=""> | **Candling light** | On while the tray is down for candling |
 
 ---
@@ -189,7 +189,7 @@ Every part can be set to **ON**, **OFF** or **AUTO** from the dashboard. In AUTO
 
 1. The DHT22 sensor reads the temperature and humidity inside the incubator every 2 seconds.
 2. The ESP32 runs the incubator parts through relays and an L298N motor driver: the heater
-   and light, the cooling fan, the egg turning motor, the two tray actuators and the
+   and light, the cooling fan, egg rolling, the two tray actuators and the
    candling light. It keeps the heater and fan rules running on its own.
 3. Every few seconds the ESP32 checks in with the SmartDuck server over HTTPS. It sends the
    readings and the state of each part, and picks up any ON, OFF or AUTO command from the
