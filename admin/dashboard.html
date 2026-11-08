@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>SmartDuck Dashboard</title>
+    <meta
+      name="description"
+      content="SmartDuck admin dashboard overview for incubation monitoring and operations."
+    />
+    <script src="../auth-guard.js?v=smartduck-20260804-auth-history-v2" data-role="admin"></script>
+    <link rel="stylesheet" href="../styles.css?v=smartduck-20260911-history-scroll-v24" />
+    <link rel="stylesheet" href="../mobile.css?v=smartduck-20260911-history-scroll-v20" />
+  </head>
+  <body data-page="dashboard" class="admin-shell-page admin-dashboard-page">
+    <div id="dashboard-container" class="dashboard-container">
+      <header class="mobile-topbar">
+        <button
+          id="mobile-menu-button"
+          class="mobile-topbar__button"
+          type="button"
+          aria-label="Open navigation"
+          aria-expanded="false"
+          aria-controls="app-sidebar"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="mobile-topbar__brand">
+          <span class="mobile-topbar__title">SmartDuck</span>
+          <span id="mobile-page-label" class="mobile-topbar__subtitle">Dashboard</span>
+        </div>
+      </header>
+
+      <div class="app-shell">
+        <aside id="app-sidebar" class="sidebar" aria-label="Sidebar navigation">
+          <div id="sidebar-content" class="sidebar__content"></div>
+        </aside>
+
+        <button
+          id="sidebar-backdrop"
+          class="sidebar-backdrop"
+          type="button"
+          aria-label="Close navigation"
+          tabindex="-1"
+        ></button>
+
+        <main class="main-content" aria-live="polite">
+          <div id="page-root" class="page-root">
+            <header class="page-header page-header--dashboard">
+              <div>
+                <h2 class="page-title">Dashboard Overview</h2>
+                <p class="page-subtitle">Overview of batch activity, incubator health, and operational summary.</p>
+              </div>
+              <div class="dashboard-toolbar admin-dashboard-toolbar">
+                <button
+                  type="button"
+                  class="dashboard-alert-button"
+                  aria-label="Open notifications"
+                  data-ui-action="Open notifications"
+                >
+                  <span class="dashboard-alert-button__icon" data-icon="bell"></span>
+                  <span class="dashboard-alert-button__badge" hidden aria-hidden="true">0</span>
+                </button>
+                <div class="dashboard-userbox admin-dashboard-userbox">
+                  <div id="admin-shell-user-avatar" class="dashboard-userbox__avatar">AU</div>
+                  <div class="dashboard-userbox__meta">
+                    <p id="admin-shell-user-name" class="dashboard-userbox__name">Admin User</p>
+                    <p id="admin-shell-user-role" class="dashboard-userbox__role">Administrator</p>
+                  </div>
+                  <span class="admin-dashboard-userbox__chevron" data-icon="chevron-down"></span>
+                </div>
+              </div>
+            </header>
+
+            <div class="page-stack admin-dashboard-layout">
+              <section class="admin-dashboard-welcome" aria-labelledby="admin-dashboard-greeting">
+                <div class="admin-dashboard-welcome__header">
+                  <div>
+                    <h3 id="admin-dashboard-greeting" class="dashboard-hero__title">Welcome back, Admin!</h3>
+                    <p class="dashboard-hero__copy">Here's what's happening with your incubators today.</p>
+                  </div>
+                </div>
+
+                <div class="admin-dashboard-metrics">
+                  <article class="dashboard-metric-card admin-dashboard-metric-card">
+                    <div class="dashboard-metric-card__icon dashboard-metric-card__icon--teal">
+                      <span data-icon="check-circle"></span>
+                    </div>
+                    <div>
+                      <p id="admin-dashboard-completed-batches" class="dashboard-metric-card__value admin-dashboard-metric-card__value">0</p>
+                      <p class="dashboard-metric-card__label">Batches Completed</p>
+                      <span class="dashboard-metric-card__status">This Month</span>
+                    </div>
+                  </article>
+
+                  <article class="dashboard-metric-card admin-dashboard-metric-card">
+                    <div class="dashboard-metric-card__icon dashboard-metric-card__icon--orange">
+                      <span data-icon="package-open"></span>
+                    </div>
+                    <div>
+                      <p id="admin-dashboard-active-batches" class="dashboard-metric-card__value admin-dashboard-metric-card__value">0</p>
+                      <p class="dashboard-metric-card__label">Active Batches</p>
+                      <span class="dashboard-metric-card__status">Running</span>
+                    </div>
+                  </article>
+
+                  <article class="dashboard-metric-card admin-dashboard-metric-card">
+                    <div class="dashboard-metric-card__icon dashboard-metric-card__icon--purple">
+                      <span data-icon="egg"></span>
+                    </div>
+                    <div>
+                      <p id="admin-dashboard-total-eggs" class="dashboard-metric-card__value admin-dashboard-metric-card__value">0</p>
+                      <p class="dashboard-metric-card__label">Total Eggs</p>
+                      <span class="dashboard-metric-card__status">In Incubation</span>
+                    </div>
+                  </article>
+
+                  <article class="dashboard-metric-card admin-dashboard-metric-card">
+                    <div class="dashboard-metric-card__icon dashboard-metric-card__icon--orange">
+                      <span data-icon="thermometer"></span>
+                    </div>
+                    <div>
+                      <p id="admin-dashboard-temperature" class="dashboard-metric-card__value admin-dashboard-metric-card__value">--</p>
+                      <p class="dashboard-metric-card__label">Temperature</p>
+                      <span id="admin-dashboard-temperature-note" class="dashboard-metric-card__status">Waiting for sensor data</span>
+                    </div>
+                  </article>
+
+                  <article class="dashboard-metric-card admin-dashboard-metric-card">
+                    <div class="dashboard-metric-card__icon dashboard-metric-card__icon--blue">
+                      <span data-icon="droplets"></span>
+                    </div>
+                    <div>
+                      <p id="admin-dashboard-humidity" class="dashboard-metric-card__value admin-dashboard-metric-card__value">--</p>
+                      <p class="dashboard-metric-card__label">Humidity</p>
+                      <span id="admin-dashboard-humidity-note" class="dashboard-metric-card__status">Waiting for sensor data</span>
+                    </div>
+                  </article>
+
+                  <article class="dashboard-metric-card admin-dashboard-metric-card">
+                    <div class="dashboard-metric-card__icon dashboard-metric-card__icon--green">
+                      <span data-icon="shield"></span>
+                    </div>
+                    <div>
+                      <p id="admin-dashboard-system-health" class="dashboard-metric-card__value admin-dashboard-metric-card__value">--</p>
+                      <p class="dashboard-metric-card__label">System Health</p>
+                      <span id="admin-dashboard-system-health-note" class="dashboard-metric-card__status">Waiting for component data</span>
+                    </div>
+                  </article>
+                </div>
+              </section>
+
+              <section class="admin-dashboard-lower-grid admin-dashboard-lower-grid--single">
+                <article class="card admin-dashboard-card admin-dashboard-card--list admin-dashboard-card--wide">
+                  <div class="admin-dashboard-card__header admin-dashboard-card__header--split">
+                    <h3 class="card__title card__title--sm">Recent History</h3>
+                    <button type="button" class="admin-dashboard-link" data-ui-action="Open history">View all</button>
+                  </div>
+                  <div id="admin-dashboard-history-list" class="admin-dashboard-list"><p class="table-empty">No completed batch history yet.</p></div>
+                </article>
+              </section>
+
+              <section class="admin-dashboard-chart-grid">
+                <article class="card admin-dashboard-card">
+                  <div class="admin-dashboard-card__header">
+                    <h3 class="card__title card__title--sm card__title--with-icon"><span class="metric-title-icon metric-title-icon--temperature" data-icon="thermometer"></span>Temperature</h3>
+                    <select class="admin-dashboard-select chart-range-select" data-chart-range="sensor-hours" data-chart-id="chart-admin-dashboard-temperature" aria-label="Temperature chart date range">
+                      <option value="realtime" selected>Realtime</option>
+                      <option value="6">Last 6 hours</option>
+                      <option value="12">Last 12 hours</option>
+                      <option value="24">Last 24 hours</option>
+                      <option value="72">Last 3 days</option>
+                      <option value="168">Last 7 days</option>
+                    </select>
+                  </div>
+                  <div class="chart-slot admin-dashboard-chart-slot">
+                    <div id="chart-admin-dashboard-temperature" data-chart-height="300"></div>
+                  </div>
+                </article>
+
+                <article class="card admin-dashboard-card">
+                  <div class="admin-dashboard-card__header">
+                    <h3 class="card__title card__title--sm card__title--with-icon"><span class="metric-title-icon metric-title-icon--humidity" data-icon="droplets"></span>Humidity</h3>
+                    <select class="admin-dashboard-select chart-range-select" data-chart-range="sensor-hours" data-chart-id="chart-admin-dashboard-humidity" aria-label="Humidity chart date range">
+                      <option value="realtime" selected>Realtime</option>
+                      <option value="6">Last 6 hours</option>
+                      <option value="12">Last 12 hours</option>
+                      <option value="24">Last 24 hours</option>
+                      <option value="72">Last 3 days</option>
+                      <option value="168">Last 7 days</option>
+                    </select>
+                  </div>
+                  <div class="chart-slot admin-dashboard-chart-slot">
+                    <div id="chart-admin-dashboard-humidity" data-chart-height="300"></div>
+                  </div>
+                </article>
+              </section>
+
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+      <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+    </div>
+    <script type="module" src="../script.js?v=smartduck-20261022-live-poll-v66"></script>
+    <script src="../mobile-shell.js?v=smartduck-20260816-mobile-v5" defer></script>
+  </body>
+</html>
+
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>SmartDuck Settings</title>
+    <meta
+      name="description"
+      content="SmartDuck settings page for components, guide, developer info, and logout."
+    />
+    <script src="../auth-guard.js?v=smartduck-20260804-auth-history-v2" data-role="user"></script>
+    <link rel="stylesheet" href="../styles.css?v=smartduck-20260911-history-scroll-v24" />
+    <link rel="stylesheet" href="../mobile.css?v=smartduck-20260911-history-scroll-v20" />
+  </head>
+  <body data-page="settings" class="user-dashboard-page user-settings-page">
+    <div id="dashboard-container" class="dashboard-container">
+      <header class="mobile-topbar">
+        <button
+          id="mobile-menu-button"
+          class="mobile-topbar__button"
+          type="button"
+          aria-label="Open navigation"
+          aria-expanded="false"
+          aria-controls="app-sidebar"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="mobile-topbar__brand">
+          <span class="mobile-topbar__title">SmartDuck</span>
+          <span id="mobile-page-label" class="mobile-topbar__subtitle">Settings</span>
+        </div>
+      </header>
+
+      <div class="app-shell">
+        <aside id="app-sidebar" class="sidebar" aria-label="Sidebar navigation">
+          <div id="sidebar-content" class="sidebar__content"></div>
+        </aside>
+
+        <button
+          id="sidebar-backdrop"
+          class="sidebar-backdrop"
+          type="button"
+          aria-label="Close navigation"
+          tabindex="-1"
+        ></button>
+
+        <main class="main-content" aria-live="polite">
+          <div id="page-root" class="page-root">
+            <header class="page-header page-header--dashboard">
+              <div>
+                <h2 class="page-title">Settings</h2>
+                <p class="page-subtitle">Guide, developer info, and account.</p>
+              </div>
+              <div class="settings-topbar">
+                <div class="dashboard-userbox">
+                  <div id="settings-user-avatar" class="dashboard-userbox__avatar">SD</div>
+                  <div class="dashboard-userbox__meta">
+                    <p id="settings-user-name" class="dashboard-userbox__name">SmartDuck User</p>
+                    <p id="settings-user-role" class="dashboard-userbox__role">System User</p>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div class="page-stack settings-layout">
+              <section class="card settings-menu-card">
+                <div class="settings-menu-list" data-settings-menu-list>
+                  <button type="button" class="settings-menu-row" data-settings-menu="guide">
+                    <span class="settings-menu-row__icon settings-menu-row__icon--guide" data-icon="book-open"></span>
+                    <span class="settings-menu-row__text">
+                      <span class="settings-menu-row__label">Guide</span>
+                      <span class="settings-menu-row__copy">How to use the SmartDuck dashboard</span>
+                    </span>
+                    <span class="settings-menu-row__chevron" data-icon="chevron-right"></span>
+                  </button>
+
+                  <button type="button" class="settings-menu-row" data-settings-menu="developer">
+                    <span class="settings-menu-row__icon settings-menu-row__icon--developer" data-icon="code"></span>
+                    <span class="settings-menu-row__text">
+                      <span class="settings-menu-row__label">Developer</span>
+                      <span class="settings-menu-row__copy">App version and developer information</span>
+                    </span>
+                    <span class="settings-menu-row__chevron" data-icon="chevron-right"></span>
+                  </button>
+
+                  <button type="button" class="settings-menu-row settings-menu-row--danger" data-settings-menu="logout">
+                    <span class="settings-menu-row__icon settings-menu-row__icon--logout" data-icon="power"></span>
+                    <span class="settings-menu-row__text">
+                      <span class="settings-menu-row__label">Logout</span>
+                      <span class="settings-menu-row__copy">Sign out of this SmartDuck account</span>
+                    </span>
+                    <span class="settings-menu-row__chevron" data-icon="chevron-right"></span>
+                  </button>
+                </div>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+      <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+    </div>
+    <script type="module" src="../script.js?v=smartduck-20261022-live-poll-v66"></script>
+    <script src="../mobile-shell.js?v=smartduck-20260816-mobile-v5" defer></script>
+  </body>
+</html>

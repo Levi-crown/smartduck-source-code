@@ -1,0 +1,28 @@
+# Secrets and machine-specific configuration never go in this repository.
+.env
+.env.*
+*.pem
+*.key
+*credentials*.json
+*service-account*.json
+*firebase-adminsdk*.json
+gmail.txt
+secrets.h
+
+# The PHP API and the ESP32 firmware are kept private.
+api/
+FOR ESP32*/
+
+# Databases, exports and runtime data.
+.smartduck-database*.json
+.accounts-migration-backup.json
+*-rtdb-export.json
+*.sqlite
+*.db
+.runtime/
+
+# Editor and OS output.
+.vscode/
+.claude/
+*.log
+Thumbs.db

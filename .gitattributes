@@ -1,0 +1,18 @@
+# Keep text files LF on every platform, so a commit from Windows does not
+# rewrite whole files with CRLF line endings.
+*.php text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.dbml text eol=lf
+*.svg text eol=lf
+
+# Binary files Git must never translate.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary

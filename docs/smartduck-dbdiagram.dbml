@@ -1,0 +1,422 @@
+Project SmartDuck {
+  Note: '''
+    SmartDuck's record model. The records live in Firebase Realtime Database
+    (smartduck/tables/<table>, sensor readings in smartduck/sensor_readings), so
+    nothing here is enforced by the database itself: the relationships are the
+    ones smartduck_validate_db() in api/backend.php checks on every load. The
+    model was drawn from the former Supabase schema, which is why it still names
+    column types and the old Postgres index.
+
+    Application date/time values intentionally use text so ISO-8601 values and
+    blank strings round-trip through the PHP/JSON layer.
+  '''
+}
+
+// ---------------------------------------------------------------------------
+// Application tables
+// ---------------------------------------------------------------------------
+
+Table public.accounts {
+  username text [pk]
+  name text
+  email text
+  avatarImage text
+  role text
+  accountRole text
+  active boolean
+  createdAt text
+  lastLoginAt text
+  passwordHash text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  Note: 'The obsolete phone column is dropped by migration 20260825000100.'
+}
+
+Table public.otps {
+  id text [pk]
+  email text [note: 'Logical account lookup only; not a FK because accounts.email is not unique.']
+  code text [note: 'Legacy plaintext field retained only for unexpired records from older deployments.']
+  purpose text
+  expiresAt bigint
+  createdAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+  codeHash text [note: 'Added by migration 20260825000000; new OTPs store only a password hash.']
+}
+
+Table public.settings {
+  id text [pk]
+  updatedByUsername text
+  systemName text
+  timezone text
+  dateFormat text
+  timeFormat text
+  itemsPerPage integer
+  refreshInterval integer
+  sessionTimeout integer
+  language text
+  temperatureUnit text
+  startPage text
+  emailNotifications boolean
+  inAppNotifications boolean
+  criticalAlerts boolean
+  warningAlerts boolean
+  resolvedAlerts boolean
+  emailAddress text
+  alertDelivery text
+  notificationSound text
+  componentModes jsonb
+  emailDigest text
+  updatedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    updatedByUsername [name: 'settings_updatedByUsername_idx']
+  }
+}
+
+Table public.incubators {
+  id text [pk]
+  name text
+  location text
+  status text
+  createdByUsername text
+  createdAt text
+  updatedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    createdByUsername [name: 'incubators_createdByUsername_idx']
+  }
+}
+
+Table public.incubator_components {
+  id text [pk]
+  incubatorId text
+  name text
+  componentType text
+  status text
+  activeCount integer
+  normalCount integer
+  warningCount integer
+  offlineCount integer
+  updatedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    incubatorId [name: 'incubator_components_incubatorId_idx']
+  }
+}
+
+Table public.sensor_readings {
+  id text [pk]
+  incubatorId text
+  componentId text
+  deviceId text
+  temperatureC numeric
+  humidityPercent numeric
+  heatIndexC numeric
+  source text
+  recordedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    incubatorId [name: 'sensor_readings_incubatorId_idx']
+    componentId [name: 'sensor_readings_componentId_idx']
+    recordedAt [name: 'sensor_readings_recorded_idx', note: 'PostgreSQL index is DESC.']
+  }
+}
+
+Table public.monitoring_events {
+  id text [pk]
+  incubatorId text
+  batchId text
+  componentId text
+  recordedByUsername text
+  eventType text
+  status text
+  severity text
+  title text
+  message text
+  recordedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    incubatorId [name: 'monitoring_events_incubatorId_idx']
+    batchId [name: 'monitoring_events_batchId_idx']
+    componentId [name: 'monitoring_events_componentId_idx']
+    recordedByUsername [name: 'monitoring_events_recordedByUsername_idx']
+  }
+}
+
+Table public.batches {
+  id text [pk]
+  incubatorId text
+  createdByUsername text
+  startDate text
+  endDate text
+  expectedHatchDate text
+  eggCount integer
+  initialEggCount integer
+  completedScheduleDays jsonb
+  scheduleRemovalRecords jsonb
+  currentDay integer
+  targetDays integer
+  progressPercent integer
+  status text
+  farmerColor text
+  eggType text
+  isPenoyBatch boolean
+  parentBatchId text [note: 'Logical self-reference only; intentionally not enforced as a FK.']
+  notes text
+  automationEnabled boolean
+  createdAt text
+  updatedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    incubatorId [name: 'batches_incubatorId_idx']
+    createdByUsername [name: 'batches_createdByUsername_idx']
+  }
+}
+
+Table public.candling_records {
+  id text [pk]
+  batchId text
+  performedByUsername text
+  candlingDay integer
+  fertileCount integer
+  infertileCount integer
+  removedCount integer
+  notes text
+  performedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    batchId [name: 'candling_records_batchId_idx']
+    performedByUsername [name: 'candling_records_performedByUsername_idx']
+  }
+}
+
+Table public.schedule_events {
+  id text [pk]
+  batchId text
+  eventDay integer
+  eventDate text
+  title text
+  details text
+  status text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    batchId [name: 'schedule_events_batchId_idx']
+  }
+}
+
+Table public.notifications {
+  id text [pk]
+  accountUsername text
+  createdByUsername text
+  incubatorId text
+  batchId text
+  componentId text
+  component text
+  severity text
+  title text
+  message text
+  status text
+  createdAt text
+  resolvedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    accountUsername [name: 'notifications_accountUsername_idx']
+    createdByUsername [name: 'notifications_createdByUsername_idx']
+    incubatorId [name: 'notifications_incubatorId_idx']
+    batchId [name: 'notifications_batchId_idx']
+    componentId [name: 'notifications_componentId_idx']
+  }
+}
+
+Table public.notification_reads {
+  id text [pk]
+  username text
+  notificationId text
+  readAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    username [name: 'notification_reads_username_idx']
+    notificationId [name: 'notification_reads_notificationId_idx']
+  }
+}
+
+Table public.production_records {
+  id text [pk]
+  batchId text
+  recordedByUsername text
+  totalEggs integer
+  fertileEggs integer
+  infertileEggs integer
+  penoyCount integer
+  balutCount integer
+  recordedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    batchId [name: 'production_records_batchId_idx']
+    recordedByUsername [name: 'production_records_recordedByUsername_idx']
+  }
+}
+
+Table public.reports {
+  id text [pk]
+  generatedByUsername text
+  batchId text
+  kind text
+  title text
+  dateRange text
+  format text
+  status text
+  generatedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    generatedByUsername [name: 'reports_generatedByUsername_idx']
+    batchId [name: 'reports_batchId_idx']
+  }
+}
+
+Table public.activity_logs {
+  id text [pk]
+  actorUsername text
+  entityType text
+  entityId text
+  action text
+  details jsonb
+  createdAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    actorUsername [name: 'activity_logs_actorUsername_idx']
+  }
+}
+
+Table public.history_clearances {
+  id text [pk]
+  scope text
+  username text [note: 'Logical account scope only; blank for account-wide clearances and intentionally not a FK.']
+  clearedAt text
+  extra jsonb [not null, default: `('{}'::jsonb)`]
+  sort_order integer [not null, default: 0]
+  synced_at timestamptz [not null, default: `now()`]
+  entryType text [note: 'Added by migration 20260826000000.']
+  entryId text [note: 'Added by migration 20260826000000.']
+}
+
+// ---------------------------------------------------------------------------
+// Runtime/infrastructure tables
+// ---------------------------------------------------------------------------
+
+Table public.smartduck_meta {
+  key text [pk]
+  value jsonb [not null, default: `('{}'::jsonb)`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table public.sessions {
+  id text [pk]
+  payload text [not null, default: '']
+  expiresAt bigint [not null, default: 0]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    expiresAt [name: 'sessions_expires_idx']
+  }
+}
+
+Table public.login_attempts {
+  attempt_key text [pk]
+  state jsonb [not null, default: `('{}'::jsonb)`]
+  revision bigint [not null, default: 1]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table public.component_commands {
+  component text [pk]
+  mode text [not null, default: '']
+  version text [not null, default: '']
+  updatedAt text [not null, default: '']
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+// ---------------------------------------------------------------------------
+// Actual PostgreSQL foreign keys (26)
+// ---------------------------------------------------------------------------
+
+Ref: public.settings.updatedByUsername > public.accounts.username
+
+Ref: public.incubators.createdByUsername > public.accounts.username
+Ref: public.incubator_components.incubatorId > public.incubators.id
+
+Ref: public.sensor_readings.incubatorId > public.incubators.id
+Ref: public.sensor_readings.componentId > public.incubator_components.id
+
+Ref: public.monitoring_events.incubatorId > public.incubators.id
+Ref: public.monitoring_events.componentId > public.incubator_components.id
+Ref: public.monitoring_events.batchId > public.batches.id
+Ref: public.monitoring_events.recordedByUsername > public.accounts.username
+
+Ref: public.batches.incubatorId > public.incubators.id
+Ref: public.batches.createdByUsername > public.accounts.username
+
+Ref: public.candling_records.batchId > public.batches.id
+Ref: public.candling_records.performedByUsername > public.accounts.username
+
+Ref: public.schedule_events.batchId > public.batches.id
+
+Ref: public.notifications.accountUsername > public.accounts.username
+Ref: public.notifications.createdByUsername > public.accounts.username
+Ref: public.notifications.incubatorId > public.incubators.id
+Ref: public.notifications.batchId > public.batches.id
+Ref: public.notifications.componentId > public.incubator_components.id
+
+Ref: public.notification_reads.username > public.accounts.username
+Ref: public.notification_reads.notificationId > public.notifications.id
+
+Ref: public.production_records.batchId > public.batches.id
+Ref: public.production_records.recordedByUsername > public.accounts.username
+
+Ref: public.reports.batchId > public.batches.id
+Ref: public.reports.generatedByUsername > public.accounts.username
+
+Ref: public.activity_logs.actorUsername > public.accounts.username

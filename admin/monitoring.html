@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>SmartDuck Monitoring</title>
+    <meta
+      name="description"
+      content="SmartDuck real-time monitoring page for incubators, sensors, and live system health."
+    />
+    <script src="../auth-guard.js?v=smartduck-20260804-auth-history-v2" data-role="admin"></script>
+    <link rel="stylesheet" href="../styles.css?v=smartduck-20260912-components-chips-v26" />
+    <link rel="stylesheet" href="../mobile.css?v=smartduck-20260912-components-status-v21" />
+  </head>
+  <body data-page="monitoring" class="admin-shell-page admin-monitoring-page">
+    <div id="dashboard-container" class="dashboard-container">
+      <header class="mobile-topbar">
+        <button
+          id="mobile-menu-button"
+          class="mobile-topbar__button"
+          type="button"
+          aria-label="Open navigation"
+          aria-expanded="false"
+          aria-controls="app-sidebar"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="mobile-topbar__brand">
+          <span class="mobile-topbar__title">SmartDuck</span>
+          <span id="mobile-page-label" class="mobile-topbar__subtitle">Monitoring</span>
+        </div>
+      </header>
+
+      <div class="app-shell">
+        <aside id="app-sidebar" class="sidebar" aria-label="Sidebar navigation">
+          <div id="sidebar-content" class="sidebar__content"></div>
+        </aside>
+
+        <button
+          id="sidebar-backdrop"
+          class="sidebar-backdrop"
+          type="button"
+          aria-label="Close navigation"
+          tabindex="-1"
+        ></button>
+
+        <main class="main-content" aria-live="polite">
+          <div id="page-root" class="page-root">
+            <header class="page-header page-header--dashboard">
+              <div>
+                <h2 class="page-title">Real-time Monitoring</h2>
+                <p class="page-subtitle">Live overview of incubators, sensors, and system conditions.</p>
+              </div>
+              <div class="monitoring-topbar">
+                <button
+                  type="button"
+                  class="dashboard-alert-button"
+                  aria-label="Open notifications"
+                  data-ui-action="Open notifications"
+                >
+                  <span class="dashboard-alert-button__icon" data-icon="bell"></span>
+                  <span class="dashboard-alert-button__badge" hidden aria-hidden="true">0</span>
+                </button>
+                <div class="dashboard-userbox admin-dashboard-userbox">
+                  <div id="admin-shell-user-avatar" class="dashboard-userbox__avatar">AU</div>
+                  <div class="dashboard-userbox__meta">
+                    <p id="admin-shell-user-name" class="dashboard-userbox__name">Admin User</p>
+                    <p id="admin-shell-user-role" class="dashboard-userbox__role">Administrator</p>
+                  </div>
+                  <span class="admin-dashboard-userbox__chevron" data-icon="chevron-down"></span>
+                </div>
+              </div>
+            </header>
+
+            <div class="page-stack monitoring-layout monitoring-layout--admin">
+              <section class="monitoring-primary-grid">
+                <article class="card monitoring-surface-card">
+                  <div class="monitoring-surface-card__header">
+                    <h3 class="card__title card__title--sm">Live Temperature</h3>
+                    <select class="monitoring-panel-button chart-range-select" data-chart-range="sensor-hours" data-chart-id="chart-monitoring-temperature" aria-label="Live temperature time range">
+                      <option value="realtime" selected>Realtime</option>
+                      <option value="6">Last 6 hours</option>
+                      <option value="12">Last 12 hours</option>
+                      <option value="24">Last 24 hours</option>
+                      <option value="72">Last 3 days</option>
+                      <option value="168">Last 7 days</option>
+                    </select>
+                  </div>
+                  <div class="chart-slot monitoring-surface-card__chart">
+                    <div id="chart-monitoring-temperature" data-chart-height="250"></div>
+                  </div>
+                  <div class="monitoring-stat-grid">
+                    <div class="monitoring-stat-chip">
+                      <span class="monitoring-stat-chip__label">Average</span>
+                      <strong id="admin-monitoring-temp-average">--</strong>
+                    </div>
+                    <div class="monitoring-stat-chip">
+                      <span class="monitoring-stat-chip__label">Min</span>
+                      <strong id="admin-monitoring-temp-min">--</strong>
+                    </div>
+                    <div class="monitoring-stat-chip">
+                      <span class="monitoring-stat-chip__label">Max</span>
+                      <strong id="admin-monitoring-temp-max">--</strong>
+                    </div>
+                    <div class="monitoring-stat-chip">
+                      <span class="monitoring-stat-chip__label">Status</span>
+                      <strong id="admin-monitoring-temp-status">No data</strong>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="card monitoring-surface-card">
+                  <div class="monitoring-surface-card__header">
+                    <h3 class="card__title card__title--sm">Live Humidity</h3>
+                    <select class="monitoring-panel-button chart-range-select" data-chart-range="sensor-hours" data-chart-id="chart-monitoring-humidity" aria-label="Live humidity time range">
+                      <option value="realtime" selected>Realtime</option>
+                      <option value="6">Last 6 hours</option>
+                      <option value="12">Last 12 hours</option>
+                      <option value="24">Last 24 hours</option>
+                      <option value="72">Last 3 days</option>
+                      <option value="168">Last 7 days</option>
+                    </select>
+                  </div>
+                  <div class="chart-slot monitoring-surface-card__chart">
+                    <div id="chart-monitoring-humidity" data-chart-height="250"></div>
+                  </div>
+                  <div class="monitoring-stat-grid">
+                    <div class="monitoring-stat-chip">
+                      <span class="monitoring-stat-chip__label">Average</span>
+                      <strong id="admin-monitoring-humidity-average">--</strong>
+                    </div>
+                    <div class="monitoring-stat-chip">
+                      <span class="monitoring-stat-chip__label">Min</span>
+                      <strong id="admin-monitoring-humidity-min">--</strong>
+                    </div>
+                    <div class="monitoring-stat-chip">
+                      <span class="monitoring-stat-chip__label">Max</span>
+                      <strong id="admin-monitoring-humidity-max">--</strong>
+                    </div>
+                    <div class="monitoring-stat-chip">
+                      <span class="monitoring-stat-chip__label">Status</span>
+                      <strong id="admin-monitoring-humidity-status">No data</strong>
+                    </div>
+                  </div>
+                </article>
+
+              </section>
+
+              <section class="monitoring-secondary-grid monitoring-secondary-grid--single">
+                <article class="card monitoring-surface-card monitoring-components-card">
+                  <div class="monitoring-surface-card__header">
+                    <h3 class="card__title card__title--sm">Components Status</h3>
+                  </div>
+                  <div class="monitoring-list monitoring-list--components" data-component-status-list>
+                    <p class="monitoring-list__empty">Waiting for component status...</p>
+                  </div>
+                </article>
+              </section>
+
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+      <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+    </div>
+    <script type="module" src="../script.js?v=smartduck-20261022-live-poll-v66"></script>
+    <script src="../mobile-shell.js?v=smartduck-20260816-mobile-v5" defer></script>
+  </body>
+</html>
+

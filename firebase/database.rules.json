@@ -1,0 +1,14 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "smartduck": {
+      "sensor_readings": {
+        ".indexOn": ["_t", "_w"]
+      },
+      "php_sessions": {
+        ".indexOn": ["expires"]
+      }
+    }
+  }
+}

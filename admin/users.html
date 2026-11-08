@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>SmartDuck User Management</title>
+    <meta
+      name="description"
+      content="SmartDuck user management page for managing system users, roles, and permissions."
+    />
+    <script src="../auth-guard.js?v=smartduck-20260804-auth-history-v2" data-role="admin"></script>
+    <link rel="stylesheet" href="../styles.css?v=smartduck-20260911-history-scroll-v24" />
+    <link rel="stylesheet" href="../mobile.css?v=smartduck-20260911-history-scroll-v20" />
+  </head>
+  <body data-page="users" class="admin-shell-page admin-users-page admin-user-management-page">
+    <div id="dashboard-container" class="dashboard-container">
+      <header class="mobile-topbar">
+        <button
+          id="mobile-menu-button"
+          class="mobile-topbar__button"
+          type="button"
+          aria-label="Open navigation"
+          aria-expanded="false"
+          aria-controls="app-sidebar"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="mobile-topbar__brand">
+          <span class="mobile-topbar__title">SmartDuck</span>
+          <span id="mobile-page-label" class="mobile-topbar__subtitle">User Management</span>
+        </div>
+      </header>
+
+      <div class="app-shell">
+        <aside id="app-sidebar" class="sidebar" aria-label="Sidebar navigation">
+          <div id="sidebar-content" class="sidebar__content"></div>
+        </aside>
+
+        <button
+          id="sidebar-backdrop"
+          class="sidebar-backdrop"
+          type="button"
+          aria-label="Close navigation"
+          tabindex="-1"
+        ></button>
+
+        <main class="main-content" aria-live="polite">
+          <div id="page-root" class="page-root">
+            <header class="page-header page-header--dashboard">
+              <div>
+                <h2 class="page-title">User Management</h2>
+                <p class="page-subtitle">Manage system users, roles, and permissions.</p>
+              </div>
+              <div class="users-topbar">
+                <button
+                  id="open-user-setup-button"
+                  class="users-topbar__button users-topbar__button--primary"
+                  type="button"
+                >
+                  <span data-icon="plus"></span>
+                  <span>Add User</span>
+                </button>
+                <button
+                  type="button"
+                  class="dashboard-alert-button"
+                  aria-label="Open notifications"
+                  data-ui-action="Open notifications"
+                >
+                  <span class="dashboard-alert-button__icon" data-icon="bell"></span>
+                  <span class="dashboard-alert-button__badge" hidden aria-hidden="true">0</span>
+                </button>
+                <div class="dashboard-userbox admin-dashboard-userbox">
+                  <div id="admin-shell-user-avatar" class="dashboard-userbox__avatar">AU</div>
+                  <div class="dashboard-userbox__meta">
+                    <p id="admin-shell-user-name" class="dashboard-userbox__name">Admin User</p>
+                    <p id="admin-shell-user-role" class="dashboard-userbox__role">Administrator</p>
+                  </div>
+                  <span class="admin-dashboard-userbox__chevron" data-icon="chevron-down"></span>
+                </div>
+              </div>
+            </header>
+
+            <div class="page-stack users-management-layout">
+              <section class="users-management-metrics">
+                <article class="card users-metric-card">
+                  <span class="users-metric-card__icon users-metric-card__icon--blue" data-icon="users"></span>
+                  <div>
+                    <p class="users-metric-card__label">Total Users</p>
+                    <p id="users-metric-total" class="users-metric-card__value">0</p>
+                    <p class="users-metric-card__meta">All registered accounts</p>
+                  </div>
+                </article>
+
+                <article class="card users-metric-card">
+                  <span class="users-metric-card__icon users-metric-card__icon--green" data-icon="user"></span>
+                  <div>
+                    <p class="users-metric-card__label">Active Users</p>
+                    <p id="users-metric-active" class="users-metric-card__value">0</p>
+                    <p class="users-metric-card__meta">Can currently access the system</p>
+                  </div>
+                </article>
+
+                <article class="card users-metric-card">
+                  <span class="users-metric-card__icon users-metric-card__icon--purple" data-icon="alert-circle"></span>
+                  <div>
+                    <p class="users-metric-card__label">Inactive Users</p>
+                    <p id="users-metric-inactive" class="users-metric-card__value">0</p>
+                    <p class="users-metric-card__meta">Accounts requiring review</p>
+                  </div>
+                </article>
+
+                <article class="card users-metric-card">
+                  <span class="users-metric-card__icon users-metric-card__icon--orange" data-icon="shield"></span>
+                  <div>
+                    <p class="users-metric-card__label">Roles</p>
+                    <p id="users-metric-roles" class="users-metric-card__value">0</p>
+                    <p class="users-metric-card__meta">Distinct access groups</p>
+                  </div>
+                </article>
+
+                <article class="card users-metric-card">
+                  <span class="users-metric-card__icon users-metric-card__icon--teal" data-icon="lock"></span>
+                  <div>
+                    <p class="users-metric-card__label">Permissions</p>
+                    <p id="users-metric-permissions" class="users-metric-card__value">--</p>
+                    <p class="users-metric-card__meta">Not configured</p>
+                  </div>
+                </article>
+              </section>
+
+              <section class="users-management-main">
+                <article class="card users-management-table-card">
+                  <div class="users-management-table-card__header">
+                    <div class="users-management-tabs" role="tablist" aria-label="User categories">
+                      <button id="users-tab-all" type="button" class="users-management-tab is-active" role="tab" aria-selected="true" data-users-status-filter="all">All Users (0)</button>
+                      <button id="users-tab-active" type="button" class="users-management-tab" role="tab" aria-selected="false" data-users-status-filter="active">Active (0)</button>
+                      <button id="users-tab-inactive" type="button" class="users-management-tab" role="tab" aria-selected="false" data-users-status-filter="inactive">Inactive (0)</button>
+                    </div>
+                  </div>
+
+                  <div class="users-management-table-wrap">
+                    <table class="users-management-table">
+                      <thead>
+                        <tr>
+                          <th>Username</th>
+                          <th>Role</th>
+                          <th>Status</th>
+                          <th>Last Login</th>
+                          <th>Created On</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="users-table-body">
+                        <tr>
+                          <td colspan="6" class="table-empty">Loading accounts...</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="users-management-table-card__footer">
+                    <p id="users-table-footnote" class="users-management-table-card__footnote">Loading users...</p>
+                    <div class="users-management-pagination" aria-label="Users pagination" hidden>
+                      <button type="button" class="users-management-pagination__button" aria-label="Previous page">
+                        <span data-icon="chevron-right" class="is-rotated"></span>
+                      </button>
+                      <button type="button" class="users-management-pagination__button is-active" aria-current="page">1</button>
+                      <button type="button" class="users-management-pagination__button">2</button>
+                      <button type="button" class="users-management-pagination__button" aria-label="Next page">
+                        <span data-icon="chevron-right"></span>
+                      </button>
+                    </div>
+                  </div>
+                </article>
+
+              </section>
+
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <div
+        id="user-detail-modal"
+        class="users-detail-modal"
+        hidden
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="user-detail-modal-title"
+      >
+        <button
+          id="user-detail-backdrop"
+          class="users-detail-modal__backdrop"
+          type="button"
+          tabindex="-1"
+          aria-label="Close user details"
+        ></button>
+        <div class="users-detail-modal__shell">
+          <article class="card users-detail-modal__card">
+            <div class="users-detail-modal__topbar">
+              <div>
+                <p class="users-detail-modal__eyebrow">SmartDuck User</p>
+                <h3 id="user-detail-modal-title" class="users-detail-modal__title">User Details</h3>
+              </div>
+              <button
+                id="user-detail-close-button"
+                class="users-detail-modal__close"
+                type="button"
+                aria-label="Close user details"
+              >&times;</button>
+            </div>
+
+            <div class="users-detail-modal__body">
+              <aside class="users-detail-modal__profile-panel">
+                <div class="users-detail-modal__summary">
+                  <button
+                    type="button"
+                    id="user-detail-avatar-button"
+                    class="users-detail-card__avatar-button"
+                    aria-label="Upload profile picture"
+                  >
+                    <span id="user-detail-avatar" class="users-detail-card__avatar">--</span>
+                    <span class="users-detail-card__avatar-badge">
+                      <span data-icon="camera"></span>
+                      <span>Upload</span>
+                    </span>
+                  </button>
+                  <input
+                    id="user-detail-avatar-input"
+                    class="users-detail-card__avatar-input"
+                    type="file"
+                    accept="image/*"
+                    hidden
+                  />
+                  <div class="users-detail-modal__hero-copy">
+                    <p id="user-detail-name" class="users-detail-card__name">No user selected</p>
+                    <p id="user-detail-role-copy" class="users-detail-card__username">--</p>
+                    <span id="user-detail-status" class="users-detail-card__status">Unavailable</span>
+                  </div>
+                </div>
+              </aside>
+
+              <div class="users-detail-modal__content-panel">
+                <section class="users-detail-modal__details" aria-label="User detail summary">
+                  <div class="users-detail-modal__detail-item">
+                    <span class="users-detail-modal__info-label">
+                      <span data-icon="user"></span>
+                      <span>Username</span>
+                    </span>
+                    <strong id="user-detail-username-card" class="users-detail-modal__info-value">--</strong>
+                  </div>
+
+                  <div class="users-detail-modal__detail-item">
+                    <span class="users-detail-modal__info-label">
+                      <span data-icon="shield"></span>
+                      <span>Role</span>
+                    </span>
+                    <strong id="user-detail-role" class="users-detail-modal__info-value">--</strong>
+                  </div>
+
+                  <div class="users-detail-modal__detail-item users-detail-modal__detail-item--wide">
+                    <span class="users-detail-modal__info-label">
+                      <span data-icon="mail"></span>
+                      <span>Email</span>
+                    </span>
+                    <strong id="user-detail-email" class="users-detail-modal__info-value">--</strong>
+                  </div>
+
+                  <div class="users-detail-modal__detail-item">
+                    <span class="users-detail-modal__info-label">
+                      <span data-icon="calendar"></span>
+                      <span>Joined Date</span>
+                    </span>
+                    <strong id="user-detail-created" class="users-detail-modal__info-value">--</strong>
+                  </div>
+
+                  <div class="users-detail-modal__detail-item">
+                    <span class="users-detail-modal__info-label">
+                      <span data-icon="clock-3"></span>
+                      <span>Last Login</span>
+                    </span>
+                    <strong id="user-detail-last-login" class="users-detail-modal__info-value">--</strong>
+                  </div>
+                </section>
+
+                <section class="users-detail-modal__section users-detail-modal__section--actions">
+                  <h4 class="users-detail-card__subheading">Account Actions</h4>
+                  <div class="users-detail-card__actions users-detail-card__actions--inline">
+                    <button
+                      type="button"
+                      id="user-detail-reset-password-button"
+                      class="users-detail-card__button"
+                    >
+                      <span data-icon="lock"></span>
+                      <span>Reset Password</span>
+                    </button>
+                    <button
+                      type="button"
+                      id="user-detail-deactivate-button"
+                      class="users-detail-card__button users-detail-card__button--danger"
+                    >
+                      <span data-icon="power"></span>
+                      <span>Deactivate User</span>
+                    </button>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </article>
+
+          <div
+            id="user-password-reset-panel"
+            class="users-password-reset-sheet"
+            hidden
+            aria-hidden="true"
+          >
+            <button
+              id="user-password-reset-backdrop"
+              type="button"
+              class="users-password-reset-sheet__backdrop"
+              tabindex="-1"
+              aria-label="Close reset password"
+            ></button>
+
+            <div class="users-password-reset-sheet__shell">
+              <article class="users-password-reset-sheet__panel">
+                <div class="users-password-reset-sheet__header">
+                  <div>
+                    <p class="user-setup-eyebrow">SmartDuck User Security</p>
+                    <h3 id="user-password-reset-title" class="user-setup-title">Reset Password</h3>
+                    <p id="user-password-reset-copy" class="user-setup-copy">
+                      Verify the current password, then confirm the OTP code sent to the account Gmail.
+                    </p>
+                  </div>
+                  <button
+                    id="user-password-reset-close-button"
+                    class="user-setup-close"
+                    type="button"
+                    aria-label="Close reset password"
+                  >&times;</button>
+                </div>
+
+                <div class="user-setup-steps" aria-hidden="true">
+                  <div class="user-setup-step is-active" data-user-password-reset-card="1">
+                    <span class="user-setup-step__number">1</span>
+                    <span class="user-setup-step__label">Passwords</span>
+                  </div>
+                  <div class="user-setup-step" data-user-password-reset-card="2">
+                    <span class="user-setup-step__number">2</span>
+                    <span class="user-setup-step__label">OTP Verify</span>
+                  </div>
+                </div>
+
+                <section class="users-password-reset-screen" data-user-password-reset-step="1">
+                  <div class="user-setup-card">
+                    <div class="user-setup-card__header">
+                      <span class="user-setup-badge">Step 1 of 2</span>
+                      <h4 class="user-setup-card__title">Change Password</h4>
+                      <p id="user-password-reset-card-copy" class="user-setup-card__copy">
+                        Enter the old password, create a new password, and confirm it before proceeding.
+                      </p>
+                    </div>
+
+                    <form id="user-password-reset-details-form" class="user-setup-form" novalidate>
+                      <div class="login-group">
+                        <label for="user-password-reset-old" class="login-label">Old Password</label>
+                        <div class="password-field">
+                          <input
+                            type="password"
+                            id="user-password-reset-old"
+                            class="login-input"
+                            placeholder="Enter old password"
+                            autocomplete="current-password"
+                          />
+                          <button
+                            type="button"
+                            class="password-toggle"
+                            data-password-toggle
+                            data-password-target="user-password-reset-old"
+                            aria-label="Show old password"
+                          ></button>
+                        </div>
+                      </div>
+
+                      <div class="login-group">
+                        <label for="user-password-reset-new" class="login-label">New Password</label>
+                        <div class="password-field">
+                          <input
+                            type="password"
+                        id="user-password-reset-new"
+                        class="login-input"
+                        placeholder="Create new password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        maxlength="64"
+                        data-credential-security="password"
+                          />
+                          <button
+                            type="button"
+                            class="password-toggle"
+                            data-password-toggle
+                            data-password-target="user-password-reset-new"
+                            aria-label="Show new password"
+                          ></button>
+                        </div>
+                      </div>
+
+                      <div class="login-group">
+                        <label for="user-password-reset-confirm" class="login-label">Confirm Password</label>
+                        <div class="password-field">
+                          <input
+                            type="password"
+                        id="user-password-reset-confirm"
+                        class="login-input"
+                        placeholder="Confirm new password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        maxlength="64"
+                          />
+                          <button
+                            type="button"
+                            class="password-toggle"
+                            data-password-toggle
+                            data-password-target="user-password-reset-confirm"
+                            aria-label="Show confirm password"
+                          ></button>
+                        </div>
+                      </div>
+
+                      <div class="user-setup-actions">
+                        <button
+                          type="button"
+                          id="user-password-reset-cancel-button"
+                          class="user-setup-secondary"
+                        >
+                          Cancel
+                        </button>
+                        <button type="submit" class="user-setup-primary">
+                          Next
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </section>
+
+                <section class="users-password-reset-screen" data-user-password-reset-step="2" hidden>
+                  <div class="user-setup-card">
+                    <div class="user-setup-card__header">
+                      <span class="user-setup-badge">Step 2 of 2</span>
+                      <h4 class="user-setup-card__title">OTP Verification</h4>
+                      <p id="user-password-reset-otp-copy" class="user-setup-card__copy">
+                        Enter the 6-digit OTP code sent to the selected Gmail address.
+                      </p>
+                    </div>
+
+                    <div id="user-password-reset-otp-alert" class="user-setup-alert" hidden>
+                      <p class="user-setup-alert__title">Incorrect OTP code</p>
+                      <p class="user-setup-alert__copy">Please try again using the latest 6-digit code.</p>
+                    </div>
+
+                    <div id="user-password-reset-otp-status" class="user-setup-status" hidden>
+                      <p class="user-setup-status__title">Sending OTP</p>
+                      <p class="user-setup-status__copy">Preparing the verification code for the selected Gmail address.</p>
+                    </div>
+
+                    <div id="user-password-reset-dev-otp" class="user-setup-dev-otp" hidden>
+                      <p class="user-setup-dev-otp__eyebrow">Local Preview OTP</p>
+                      <p class="user-setup-dev-otp__copy">
+                        Gmail delivery is skipped in local preview. Use this OTP code for testing:
+                      </p>
+                      <div id="user-password-reset-dev-otp-code" class="user-setup-dev-otp__code">------</div>
+                    </div>
+
+                    <form id="user-password-reset-otp-form" class="user-setup-form" novalidate>
+                      <div class="login-group">
+                        <label class="login-label" for="user-password-reset-otp-digit-1">OTP Code</label>
+                        <div class="otp-grid">
+                          <input id="user-password-reset-otp-digit-1" class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-password-reset-otp-input="0" />
+                          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-password-reset-otp-input="1" />
+                          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-password-reset-otp-input="2" />
+                          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-password-reset-otp-input="3" />
+                          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-password-reset-otp-input="4" />
+                          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-password-reset-otp-input="5" />
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        id="user-password-reset-resend-button"
+                        class="user-setup-link"
+                      >
+                        Resend OTP
+                      </button>
+
+                      <div class="user-setup-actions">
+                        <button
+                          type="button"
+                          id="user-password-reset-step-two-cancel-button"
+                          class="user-setup-secondary"
+                        >
+                          Cancel
+                        </button>
+                        <button type="submit" class="user-setup-primary">
+                          Update Password
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </section>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+      <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+      <div
+        id="user-setup-modal"
+        class="user-setup-modal"
+        hidden
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="user-setup-title"
+      >
+        <button
+          id="user-setup-backdrop"
+          class="user-setup-modal__backdrop"
+          type="button"
+          tabindex="-1"
+          aria-label="Close add user modal"
+        ></button>
+        <div class="user-setup-shell">
+          <div class="user-setup-panel">
+            <div class="user-setup-header">
+              <div>
+                <p class="user-setup-eyebrow">SmartDuck Account Setup</p>
+                <h2 id="user-setup-title" class="user-setup-title">Create New User</h2>
+                <p id="user-setup-copy" class="user-setup-copy">
+                  Add a SmartDuck account, then verify the Gmail OTP before saving it.
+                </p>
+              </div>
+              <button
+                id="user-setup-close-button"
+                class="user-setup-close"
+                type="button"
+                aria-label="Close add user modal"
+              >&times;</button>
+            </div>
+
+            <div class="user-setup-steps" aria-hidden="true">
+              <div class="user-setup-step is-active" data-user-setup-card="1">
+                <span class="user-setup-step__number">1</span>
+                <span class="user-setup-step__label">Details</span>
+              </div>
+              <div class="user-setup-step" data-user-setup-card="2">
+                <span class="user-setup-step__number">2</span>
+                <span class="user-setup-step__label">OTP Verify</span>
+              </div>
+            </div>
+
+            <section class="user-setup-screen" data-user-setup-step="1">
+              <div class="user-setup-card">
+                <div class="user-setup-card__header">
+                  <span class="user-setup-badge">Step 1 of 2</span>
+                  <h3 class="user-setup-card__title">Account Details</h3>
+                  <p class="user-setup-card__copy">
+                    Enter the SmartDuck username, Gmail address, access role, and password for the new account.
+                  </p>
+                </div>
+
+                <form id="user-setup-details-form" class="user-setup-form user-setup-form--details" novalidate>
+                  <div class="user-setup-form__grid">
+                    <div class="login-group">
+                      <label for="user-setup-username" class="login-label">Username</label>
+                      <input
+                        type="text"
+                      id="user-setup-username"
+                      class="login-input"
+                      placeholder="Enter username"
+                      autocomplete="off"
+                      autocapitalize="none"
+                      spellcheck="false"
+                      minlength="2"
+                      maxlength="30"
+                      data-credential-security="username"
+                      />
+                    </div>
+
+                    <div class="login-group">
+                      <label for="user-setup-email" class="login-label">Gmail Address</label>
+                      <input
+                        type="email"
+                        id="user-setup-email"
+                        class="login-input"
+                        placeholder="name@gmail.com"
+                        autocomplete="email"
+                      />
+                    </div>
+
+                    <div class="login-group user-setup-form__grid-span">
+                      <label for="user-setup-role" class="login-label">Role</label>
+                      <select id="user-setup-role" class="login-input user-setup-select">
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Operator">Operator</option>
+                      </select>
+                    </div>
+
+                    <div class="login-group">
+                      <label for="user-setup-password" class="login-label">Password</label>
+                      <div class="password-field">
+                        <input
+                          type="password"
+                          id="user-setup-password"
+                          class="login-input"
+                          placeholder="Create password"
+                          autocomplete="new-password"
+                          minlength="8"
+                          maxlength="64"
+                          data-credential-security="password"
+                          data-credential-username-source="#user-setup-username"
+                          data-credential-email-source="#user-setup-email"
+                        />
+                        <button
+                          type="button"
+                          class="password-toggle"
+                          data-password-toggle
+                          data-password-target="user-setup-password"
+                          aria-label="Show password"
+                          aria-pressed="false"
+                        ></button>
+                      </div>
+                    </div>
+
+                    <div class="login-group">
+                      <label for="user-setup-password-confirm" class="login-label">Confirm Password</label>
+                      <div class="password-field">
+                        <input
+                          type="password"
+                          id="user-setup-password-confirm"
+                          class="login-input"
+                          placeholder="Confirm password"
+                          autocomplete="new-password"
+                          minlength="8"
+                          maxlength="64"
+                        />
+                        <button
+                          type="button"
+                          class="password-toggle"
+                          data-password-toggle
+                          data-password-target="user-setup-password-confirm"
+                          aria-label="Show confirm password"
+                          aria-pressed="false"
+                        ></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="user-setup-actions">
+                    <button type="button" id="user-setup-cancel-button" class="user-setup-secondary">
+                      Cancel
+                    </button>
+                    <button type="submit" class="user-setup-primary">
+                      Next
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </section>
+
+            <section class="user-setup-screen" data-user-setup-step="2" hidden>
+              <div class="user-setup-card">
+                <div class="user-setup-card__header">
+                  <span class="user-setup-badge">Step 2 of 2</span>
+                  <h3 class="user-setup-card__title">OTP Verification</h3>
+                  <p id="user-setup-otp-copy" class="user-setup-card__copy">
+                    Enter the 6-digit OTP code sent to the selected Gmail address.
+                  </p>
+                </div>
+
+                <div id="user-setup-otp-alert" class="user-setup-alert" hidden>
+                  <p class="user-setup-alert__title">Incorrect OTP code</p>
+                  <p class="user-setup-alert__copy">Please try again using the latest 6-digit code.</p>
+                </div>
+
+                <div id="user-setup-otp-status" class="user-setup-status" hidden>
+                  <p class="user-setup-status__title">Sending OTP</p>
+                  <p class="user-setup-status__copy">Preparing the verification code for the selected Gmail address.</p>
+                </div>
+
+                <div id="user-setup-dev-otp" class="user-setup-dev-otp" hidden>
+                  <p class="user-setup-dev-otp__eyebrow">Local Preview OTP</p>
+                  <p class="user-setup-dev-otp__copy">
+                    Gmail delivery is skipped in local preview. Use this OTP code for testing:
+                  </p>
+                  <div id="user-setup-dev-otp-code" class="user-setup-dev-otp__code">------</div>
+                </div>
+
+                <form id="user-setup-otp-form" class="user-setup-form" novalidate>
+                  <div class="login-group">
+                    <label class="login-label" for="user-setup-otp-digit-1">OTP Code</label>
+                    <div class="otp-grid">
+                      <input id="user-setup-otp-digit-1" class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-otp-input="0" />
+                      <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-otp-input="1" />
+                      <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-otp-input="2" />
+                      <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-otp-input="3" />
+                      <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-otp-input="4" />
+                      <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-user-otp-input="5" />
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    id="user-setup-resend-button"
+                    class="user-setup-link"
+                  >
+                    Resend OTP
+                  </button>
+
+                  <div class="user-setup-actions">
+                    <button type="button" id="user-setup-back-button" class="user-setup-secondary">
+                      Back
+                    </button>
+                    <button type="submit" class="user-setup-primary">
+                      Create Account
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="../script.js?v=smartduck-20261022-live-poll-v66"></script>
+    <script src="../mobile-shell.js?v=smartduck-20260816-mobile-v5" defer></script>
+  </body>
+</html>

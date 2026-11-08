@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>SmartDuck Login</title>
+    <meta
+      name="description"
+      content="SmartDuck login page for the IoT incubation system dashboard."
+    />
+    <link rel="stylesheet" href="./styles.css?v=smartduck-20260911-history-scroll-v24" />
+    <link rel="stylesheet" href="./mobile.css?v=smartduck-20260911-history-scroll-v20" />
+  </head>
+  <body data-page="login">
+    <div id="login-page" class="login-page">
+      <div class="login-container">
+        <div class="login-card">
+          <div class="login-brand">
+            <div class="login-logo-shell" aria-hidden="true">
+              <img
+                src="./assets/logo-transparent.png"
+                alt=""
+                class="login-logo"
+              />
+            </div>
+            <h1 class="login-wordmark">Smart<span>Duck</span></h1>
+            <div class="login-copy">
+              <p class="login-title">Welcome back!</p>
+              <p class="login-subtitle">Sign in to continue to <strong>SmartDuck</strong></p>
+            </div>
+          </div>
+          <div class="login-form-panel">
+          <form id="login-form" class="login-form" novalidate>
+            <div class="login-group">
+              <label for="username" class="login-label">Username</label>
+              <div class="login-field">
+                <span class="login-field__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="8" r="4"></circle>
+                    <path d="M4.5 20a7.5 7.5 0 0 1 15 0"></path>
+                  </svg>
+                </span>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  class="login-input"
+                  placeholder="Enter your username"
+                  autocomplete="username"
+                />
+              </div>
+            </div>
+            <div class="login-group">
+              <label for="password" class="login-label">Password</label>
+              <div class="login-field password-field">
+                <span class="login-field__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                    <path d="M12 14v2"></path>
+                  </svg>
+                </span>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="login-input"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  data-password-toggle
+                  data-password-target="password"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                ></button>
+              </div>
+            </div>
+            <div class="login-actions">
+              <button
+                id="forgot-password-button"
+                class="login-link"
+                type="button"
+              >
+                Forgot password?
+              </button>
+            </div>
+            <p id="login-lockout-status" class="login-lockout-status" role="status" aria-live="polite" hidden></p>
+            <button type="submit" class="login-button">
+              <span>Sign in</span>
+              <span class="login-button__arrow" aria-hidden="true">-&gt;</span>
+            </button>
+          </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="recovery-modal"
+      class="recovery-modal"
+      hidden
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="recovery-title"
+    >
+      <button
+        id="recovery-backdrop"
+        class="recovery-modal__backdrop"
+        type="button"
+        tabindex="-1"
+        aria-label="Close password recovery"
+      ></button>
+      <div class="recovery-card">
+        <div class="recovery-card__header">
+          <div>
+            <p class="recovery-card__eyebrow">Password Recovery</p>
+            <h2 id="recovery-title" class="recovery-card__title">Recover your account</h2>
+            <p id="recovery-description" class="recovery-card__copy">
+              Enter your Gmail address to start the password reset process.
+            </p>
+          </div>
+          <button
+            id="recovery-close-button"
+            class="recovery-close"
+            type="button"
+            aria-label="Close password recovery"
+          >&times;</button>
+        </div>
+
+        <div class="recovery-steps" aria-hidden="true">
+          <div class="recovery-step-card is-active" data-recovery-step-card="1">
+            <span class="recovery-step-card__number">1</span>
+            <span class="recovery-step-card__label">Gmail</span>
+          </div>
+          <div class="recovery-step-card" data-recovery-step-card="2">
+            <span class="recovery-step-card__number">2</span>
+            <span class="recovery-step-card__label">OTP</span>
+          </div>
+          <div class="recovery-step-card" data-recovery-step-card="3">
+            <span class="recovery-step-card__number">3</span>
+            <span class="recovery-step-card__label">New Password</span>
+          </div>
+        </div>
+
+        <section class="recovery-screen" data-recovery-step="1">
+          <form id="recovery-email-form" class="login-form recovery-form" novalidate>
+            <div class="login-group">
+              <label for="recovery-email" class="login-label">Gmail Address</label>
+              <input
+                type="email"
+                id="recovery-email"
+                name="recovery-email"
+                class="login-input"
+                placeholder="name@gmail.com"
+                autocomplete="email"
+              />
+            </div>
+            <button type="submit" class="login-button">Next</button>
+          </form>
+        </section>
+
+        <section class="recovery-screen" data-recovery-step="2" hidden>
+          <div id="recovery-otp-alert" class="recovery-alert" hidden>
+            <p class="recovery-alert__title">Incorrect OTP code</p>
+            <p class="recovery-alert__copy">Please try again using the latest 6-digit code.</p>
+          </div>
+
+          <form id="recovery-otp-form" class="login-form recovery-form" novalidate>
+            <div class="login-group">
+              <label class="login-label" for="recovery-otp-digit-1">Enter OTP Code</label>
+              <div class="otp-grid">
+                <input id="recovery-otp-digit-1" class="otp-input" type="text" inputmode="numeric" maxlength="1" data-otp-input="0" autocomplete="one-time-code" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-otp-input="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-otp-input="2" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-otp-input="3" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-otp-input="4" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" data-otp-input="5" />
+              </div>
+            </div>
+            <div class="recovery-form__actions">
+              <button
+                type="button"
+                class="login-link login-link--left"
+                id="recovery-resend-button"
+              >
+                Resend OTP
+              </button>
+            </div>
+            <div class="recovery-button-row">
+              <button type="button" class="recovery-secondary-button" id="recovery-back-to-email">
+                Back
+              </button>
+              <button type="submit" class="login-button recovery-primary-button">Next</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="recovery-screen" data-recovery-step="3" hidden>
+          <form id="recovery-password-form" class="login-form recovery-form" novalidate>
+            <div class="login-group">
+              <label for="recovery-password" class="login-label">New Password</label>
+              <div class="password-field">
+                <input
+                  type="password"
+                  id="recovery-password"
+                  name="recovery-password"
+                  class="login-input"
+                  placeholder="Enter new password"
+                  autocomplete="new-password"
+                  minlength="8"
+                  maxlength="64"
+                  data-credential-security="password"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  data-password-toggle
+                  data-password-target="recovery-password"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                ></button>
+              </div>
+            </div>
+            <div class="login-group">
+              <label for="recovery-password-confirm" class="login-label">Confirm Password</label>
+              <div class="password-field">
+                <input
+                  type="password"
+                  id="recovery-password-confirm"
+                  name="recovery-password-confirm"
+                  class="login-input"
+                  placeholder="Confirm new password"
+                  autocomplete="new-password"
+                  minlength="8"
+                  maxlength="64"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  data-password-toggle
+                  data-password-target="recovery-password-confirm"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                ></button>
+              </div>
+            </div>
+            <div class="recovery-button-row">
+              <button type="button" class="recovery-secondary-button" id="recovery-back-to-otp">
+                Back
+              </button>
+              <button type="submit" class="login-button recovery-primary-button">Update Password</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="./script.js?v=smartduck-20261022-live-poll-v66"></script>
+  </body>
+</html>
