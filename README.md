@@ -17,7 +17,9 @@
 
 ## <img src="assets/badges/egg.svg" width="30" height="30" align="absmiddle" alt=""> About
 
-SmartDuck is an incubator for duck eggs that is watched and controlled from a website.
+SmartDuck was made for Uno Duck Farm in Sta. Catalina Sur, Candelaria, Quezon, which
+produces balut and penoy. It is an incubator for duck eggs that is watched and controlled
+from a website.
 A DHT22 sensor inside the incubator reads the temperature and humidity every 2 seconds,
 and an ESP32 board keeps the eggs in the right conditions. During a batch it:
 
