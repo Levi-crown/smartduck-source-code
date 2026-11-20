@@ -268,6 +268,16 @@ message me on Telegram or Facebook. Just tap a button below.
 
 ---
 
+## <img src="assets/badges/coffee.svg" width="30" height="30" align="absmiddle" alt=""> Support
+
+If SmartDuck helped you with your own project, you can support me with a coffee.
+
+<p align="center">
+  <a href="https://buymeacoffee.com/LevNotFound"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="52" alt="Buy me a coffee"></a>
+</p>
+
+---
+
 <p align="center">
   <img src="assets/logo-transparent.png" width="120" alt="SmartDuck logo">
   <br>
